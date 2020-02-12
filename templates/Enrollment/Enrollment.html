@@ -1,0 +1,131 @@
+{% extends "starter.html" %}
+{% load mytags %}
+{% load static %}
+{% block title %}
+    <h1>报名表</h1>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <a href="{% url "app01:add_enrollment" %}" class="btn btn-success  pull-left">添加报名表</a>
+        <form action="" class="form-inline pull-right">
+            <div class="form-group">
+
+                <select name="field" class="form-control search_field">
+                    <option value="name__contains">姓名</option>
+                </select>
+
+
+                <input type="text" class="form-control" name="keyword" value="{{ keyword|default:"" }}" >
+                <input type="submit" class="btn btn-success" value="搜索">
+            </div>
+
+        </form>
+        <form action="" class="form-group form-inline pull-left">
+            <select name="publish_to_private" id="action" class="form-control">
+
+                <option value="bluk_delete" class="bluk_delete">批量删除</option>
+            </select>
+            <button type="button" class="btn btn-warning go ">go</button>
+        </form>
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>选择</th>
+                <th>序号</th>
+                <th>姓名</th>
+                <th>为什么报名</th>
+                <th>学完想达到的具体期望</th>
+
+                <th>报名日期</th>
+                <th>校区</th>
+                <th>所报班级</th>
+                <th>操作</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for enrollment in  all_enrollment %}
+                <tr>
+                    <td><input type="checkbox" class="checkbox-row pk" value="{{ enrollment.pk }}"/></td>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ enrollment.customer.name }}</td>
+                    <td>{{ enrollment.why_us }}</td>
+                    <td>{{ enrollment.your_expectation }}</td>
+                    <td>{{ enrollment.enrolled_date|date:"Y-m-d" }}</td>
+                    <td>{{ enrollment.school.name }}</td>
+                    <td>{{ enrollment.enrolment_class }}</td>
+                    <td>
+                        <a href="{% url "app01:editor_enrollment" enrollment.pk %}">
+                            <li class="fa  fa-edit"></li>
+                        </a>
+                        <a href="{% reverse_url 'app01:editor_enrollment' enrollment.pk request %}"> <i class="fa fa-edit"></i>xx
+                        </a>
+                        {#        <a href="" class="btn btn-warning btn-sm" >编辑</a>#}
+                        {#        <a href="" class="btn btn-danger btn-sm" >删除</a>#}
+                    </td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+    {{ page_html }}
+    {% block js %}
+        <script>
+            var a = '{{ search_field }}';
+            if (!a) {
+                $(".search_field").val(a);
+            }
+
+            $(".go").on("click", function () {
+                var pk_data = [];
+                var b = $(".pk:checked");
+
+                for (var i = 0; i < b.length; i++) {
+                    pk_data.push($(b[i]).val());
+                }
+
+                var action = $("#action").val();
+                $.ajax({
+                    url: "{% url "app01:enrollment" %}",
+                    type: "post",
+                    data: {
+                        action: action,
+                        pk_data: JSON.stringify(pk_data),
+                        csrfmiddlewaretoken: "{{ csrf_token }}",
+                    },
+                    success: function (res) {
+                        if (res.status === 1) {
+                            location.href = res.url
+                        }
+
+                    }
+                })
+            });
+            $(function () {
+                if (location.href.indexOf('{% url "app01:private_customer" %}') === -1) {
+                    $(".h1_title").text("公户客户信息");
+                    $(".private_publish").attr("disabled", "disabled")
+                } else {
+                    $(".h1_title").text("私户客户信息");
+                    $(".publish_private").attr("disabled", "disabled");
+                    $(".private_publish").attr("selected", "selected")
+                }
+            });
+
+            {#function GetUrlRelativePath() {#}
+            {#    var url = document.location.toString();#}
+            {#    var arrUrl = url.split("//");#}
+            {#    var start = arrUrl[1].indexOf("/");#}
+            {#    var relUrl = arrUrl[1].substring(start);//stop省略，截取从start开始到结尾的所有字符#}
+            {#    if (relUrl.indexOf("?") != -1) {#}
+            {#        relUrl = relUrl.split("?")[0];#}
+            {#    }#}
+            {#    return relUrl;#}
+            {# }#}
+        </script>
+    {% endblock %}
+
+{% endblock %}
