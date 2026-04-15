@@ -1,45 +1,60 @@
-# -*- coding:utf-8 -*-
-# Author:cqk
-# Data:2019/10/23 8:50
-from django.shortcuts import render, HttpResponse, redirect
+# -*- coding: utf-8 -*-
+"""
+Authentication views for CRM system.
+Handles user login, logout, and registration.
+"""
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+
 from app01 import models
 from utils.MD5_func import md5_function
 from app01.MyModelForm.UserInfoForm import UserInfoForm
+
+
 def logout(request):
-    request.session.flush()  # 清除cookie和session
+    """Clear session data and redirect to login page."""
+    request.session.flush()
     return redirect("app01:login")
 
 
 def login(request):
+    """Handle user login with username and password."""
     if request.method == "POST":
-        dic=request.POST.dict()
-        user=models.UserInfo.objects.filter(username=dic.get("username"),
-                                            password=md5_function(dic.get("password"))).first()
+        data = request.POST.dict()
+        username = data.get("username")
+        password = md5_function(data.get("password"))
+        
+        user = models.UserInfo.objects.filter(
+            username=username,
+            password=password
+        ).first()
+        
         if user:
-            request.session["username"]=dic["username"]
+            request.session["username"] = username
             return redirect("app01:home")
         else:
             return HttpResponse("用户名或密码错误")
+    
     return render(request, "login/login.html", {})
 
 
 def register(request):
-    user=UserInfoForm()
+    """Handle user registration with form validation."""
     if request.method == "POST":
-        dic=request.POST.dict()
-        print(dic)
-        dic.pop("csrfmiddlewaretoken")
-        dic.pop("confirm_password")
-
-        user=UserInfoForm(data=request.POST)
-        # print(user)
-        if user.is_valid():
-            dic.update({"password": md5_function(dic["password"])})
-            models.UserInfo.objects.create(**dic)
+        form = UserInfoForm(data=request.POST)
+        
+        if form.is_valid():
+            # Create user with hashed password
+            cleaned_data = form.cleaned_data
+            models.UserInfo.objects.create(
+                username=cleaned_data["username"],
+                password=md5_function(cleaned_data["password"]),
+                telephone=cleaned_data["telephone"],
+                email=cleaned_data["email"],
+            )
             return redirect("app01:login")
-
-        else:
-            return render(request, "login/register.html", {"user": user})
-
-    return render(request, "login/register.html", {"user": user})
-
+        
+        return render(request, "login/register.html", {"user": form})
+    
+    form = UserInfoForm()
+    return render(request, "login/register.html", {"user": form})
