@@ -1,4 +1,37 @@
 ```
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+*.py~
+*.py.class
+.Python
+env/
+venv/
+.venv/
+.env
+.env.local
+.env.*
+
+# Django
+*.log
+*.pot
+*.po
+MANIFEST.in
+media/
+staticfiles/
+db.sqlite3
+*.mo
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.tmp
+
+# OS
+.DS_Store
+Thumbs.db
 ```
