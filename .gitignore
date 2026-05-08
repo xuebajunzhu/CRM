@@ -1,37 +1,46 @@
 ```
-# Database files
-*.sqlite3
+# Dependencies
+node_modules/
+venv/
+.venv/
+__pycache__/
+.mypy_cache/
+.pytest_cache/
+target/
+.gradle/
+
+# Build artifacts
+dist/
+build/
+*.pyc
+*.class
+*.o
+*.exe
+*.dll
+*.so
+*.a
+*.obj
+*.out
 
 # Environment files
 .env
 .env.local
 *.env.*
 
-# Logs and temporary files
-*.log
-*.tmp
-*.swp
-
-# Editors/IDE
+# Editor/IDE files
 .vscode/
 .idea/
+*.swp
+*.swo
+*.tmp
 
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-*.so
-.coverage
+# Logs
+*.log
+
+# Coverage
+coverage/
 htmlcov/
-.coverage.*
-.python-version
-
-# Build directories
-dist/
-build/
-*.egg-info/
+.coverage
 
 # System files
 .DS_Store
