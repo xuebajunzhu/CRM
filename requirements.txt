@@ -1,0 +1,17 @@
+# Core Django
+Django>=3.2,<4.0
+
+# Database
+PyMySQL>=1.0.0
+
+# Form fields
+django-multiselectfield>=0.1.12
+
+# Production deployment (optional)
+# gunicorn>=20.1.0
+# psycopg2-binary>=2.9.0  # For PostgreSQL
+
+# Development tools (optional)
+# pytest-django>=4.5.0
+# black>=22.0.0
+# flake8>=4.0.0
