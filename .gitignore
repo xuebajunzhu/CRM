@@ -1,39 +1,33 @@
 ```
 # Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-*.py~
-*.py.class
-*.py.backup
-*.swp
-*.swo
-*.tmp
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# Dependencies
-venv/
-.venv/
+# Environment
 .env
 .env.local
 .env.*
-
-# Django
-*.log
-local_settings.py
-db.sqlite3
-media/
-staticfiles/
-
-# Database
-*.sqlite
-*.sqlite3
-*.db
-
-# Coverage
-.coverage
-htmlcov/
-coverage/
+.venv/
+venv/
+ENV/
 
 # IDE
 .vscode/
@@ -41,12 +35,15 @@ coverage/
 *.swp
 *.swo
 
-# OS
-.DS_Store
-Thumbs.db
+# Logs
+*.log
 
-# Build
-dist/
-build/
-*.egg-info/
+# Coverage
+.coverage
+coverage/
+htmlcov/
+
+# Testing
+.pytest_cache/
+.mypy_cache/
 ```
