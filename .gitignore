@@ -1,1 +1,52 @@
-Nothing to output - the changes only include a README.md file which is a source/config file, and there are no build artifacts, dependencies, or temp files in the change list.
+```
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.py~
+*.py.class
+*.py.backup
+*.swp
+*.swo
+*.tmp
+
+# Dependencies
+venv/
+.venv/
+.env
+.env.local
+.env.*
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+media/
+staticfiles/
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Coverage
+.coverage
+htmlcov/
+coverage/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+build/
+*.egg-info/
+```

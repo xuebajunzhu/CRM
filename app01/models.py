@@ -3,6 +3,7 @@ Database models for CRM application.
 Defines data structures for users, customers, consultations, enrollments, and courses.
 """
 from django.db import models
+from django.core.validators import RegexValidator, FileExtensionValidator, MaxLengthValidator
 from multiselectfield import MultiSelectField
 from django.utils.safestring import mark_safe
 
@@ -127,6 +128,16 @@ class Department(models.Model):
         return self.name
 
 
+class CustomerManager(models.Manager):
+    """Custom manager for Customer model with soft delete support."""
+    
+    def get_queryset(self):
+        return super().get_queryset().filter(delete_status=False)
+    
+    def all_with_deleted(self):
+        return super().get_queryset()
+
+
 class Customer(models.Model):
     """Customer table for tracking potential and enrolled students."""
     
@@ -159,7 +170,15 @@ class Customer(models.Model):
         null=True,
         help_text="格式 yyyy-mm-dd"
     )
-    phone = models.BigIntegerField('手机号', blank=True, null=True)
+    phone = models.CharField(
+        '手机号',
+        max_length=11,
+        blank=True,
+        null=True,
+        validators=[
+            RegexValidator(r'^1[3-9]\d{9}$', '手机号格式不正确')
+        ]
+    )
     source = models.CharField(
         '客户来源',
         max_length=64,
@@ -205,6 +224,10 @@ class Customer(models.Model):
         blank=True
     )
     deal_date = models.DateField(null=True, blank=True)
+    delete_status = models.BooleanField(verbose_name='删除状态', default=False)
+
+    objects = CustomerManager()
+    all_objects = models.Manager()
 
     class Meta:
         ordering = ['id']
@@ -462,7 +485,11 @@ class StudyRecord(models.Model):
         verbose_name='作业文件',
         blank=True,
         null=True,
-        default=None
+        default=None,
+        upload_to='homeworks/',
+        validators=[
+            FileExtensionValidator(['pdf', 'doc', 'docx', 'zip', 'txt']),
+        ]
     )
     course_record = models.ForeignKey(
         'CourseRecord',

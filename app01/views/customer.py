@@ -33,11 +33,21 @@ class Customer(View):
         keyword = request.GET.get("keyword")
         get_data = copy.copy(request.GET)
 
-        # Build query based on search criteria
-        if keyword:
+        # Build query based on search criteria with allowed fields validation
+        ALLOWED_SEARCH_FIELDS = {
+            'customer': ['qq__contains', 'name__contains', 'phone__contains', 'qq_name__contains'],
+            'consultrecord': ['note__contains', 'status'],
+            'enrollment': ['why_us__contains', 'memo__contains'],
+            'courserecord': ['course_title__contains', 'course_memo__contains'],
+        }
+        
+        if keyword and search_field in ALLOWED_SEARCH_FIELDS.get(self.model_name, []):
             q = Q()
             q.children.append([search_field, keyword])
             all_customer = models.Customer.objects.filter(q)
+        elif keyword:
+            # Invalid search field, return empty or show error
+            all_customer = models.Customer.objects.none()
         else:
             all_customer = models.Customer.objects.all()
 
